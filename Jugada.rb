@@ -50,7 +50,7 @@ class Jugada
         }
 
         if @jugadas[jugada_realizada] != nil
-            @jugada = jugada_realizada
+            @jugada = @jugadas[jugada_realizada]
         else
             puts "Jugada incorrecta"
         end
@@ -58,7 +58,7 @@ class Jugada
 
     # Metodo to_s
     def to_s()
-        @jugadas[@jugada]
+        @jugada
     end
 
     # Metodo puntos(j)
@@ -70,7 +70,7 @@ class Jugada
             return empate
         else
             ronda = jugador_1 + ", " + jugador_2
-            return ronda 
+            return @puntos_por_jugada[ronda] 
         end
     end
 end
