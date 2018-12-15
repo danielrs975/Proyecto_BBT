@@ -31,3 +31,19 @@ Tambien se hara la implementacion de los siguientes metodos:
     una instancia de Estrategia
     - reset     ---> Lleva la estrategia a su estado inicial
 =end 
+
+class Estrategia
+    # Esta es una plantilla de la funcion pues cambiara 
+    # segun la especializacion
+    # Funcion que genera la proxima jugada
+    def prox(m)
+    end
+
+    # Muestra la clase en formato Human-Readable
+    def to_s()
+    end
+    
+    # Regresa el juego a su estado original
+    def reset()
+    end
+end 
