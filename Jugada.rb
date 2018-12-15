@@ -12,45 +12,44 @@ Y los metodos son solo dos:
 =end 
 
 class Jugada
+    # Variables utilizadas 
+    # Estas son las posibles jugadas que se puede realizar
+    $jugadas = {
+        "Piedra" => "pi",
+        "Papel" => "pa",
+        "Tijera" => "ti",
+        "Spock" => "sp",
+        "Lagarto" => "la"
+    }
+
+     # Estos son los puntos asociados por cada forma posible de terminar una ronda
+    $puntos_por_jugada = {
+        "pi, pa" => [0, 1],
+        "pi, la" => [1, 0],
+        "pi, sp" => [0, 1],
+        "pi, ti" => [1, 0],
+        "pa, sp" => [1, 0],
+        "pa, pi" => [1, 0],
+        "pa, ti" => [0, 1],
+        "pa, la" => [0, 1],
+        "ti, la" => [1, 0],
+        "ti, pa" => [1, 0],
+        "ti, sp" => [0, 1],
+        "ti, pi" => [0, 1],
+        "la, sp" => [1, 0],
+        "la, pa" => [1, 0],
+        "la, pi" => [0, 1],
+        "la, ti" => [0, 1],
+        "sp, ti" => [1, 0],
+        "sp, pi" => [1, 0],
+        "sp, pa" => [0, 1],
+        "sp, la" => [0, 1]
+    }
 
     # Constructor del objeto jugada
     def initialize(jugada_realizada)
-        # Variables utilizadas 
-        # Estas son las posibles jugadas que se puede realizar
-        @jugadas = {
-            "Piedra" => "pi",
-            "Papel" => "pa",
-            "Tijera" => "ti",
-            "Spock" => "sp",
-            "Lagarto" => "la"
-        }
-
-        # Estos son los puntos asociados por cada forma posible de terminar una ronda
-        @puntos_por_jugada = {
-            "pi, pa" => [0, 1],
-            "pi, la" => [1, 0],
-            "pi, sp" => [0, 1],
-            "pi, ti" => [1, 0],
-            "pa, sp" => [1, 0],
-            "pa, pi" => [1, 0],
-            "pa, ti" => [0, 1],
-            "pa, la" => [0, 1],
-            "ti, la" => [1, 0],
-            "ti, pa" => [1, 0],
-            "ti, sp" => [0, 1],
-            "ti, pi" => [0, 1],
-            "la, sp" => [1, 0],
-            "la, pa" => [1, 0],
-            "la, pi" => [0, 1],
-            "la, ti" => [0, 1],
-            "sp, ti" => [1, 0],
-            "sp, pi" => [1, 0],
-            "sp, pa" => [0, 1],
-            "sp, la" => [0, 1]
-        }
-
-        if @jugadas[jugada_realizada] != nil
-            @jugada = @jugadas[jugada_realizada]
+        if $jugadas[jugada_realizada] != nil
+            @jugada = $jugadas[jugada_realizada]
         else
             puts "Jugada incorrecta"
         end
@@ -70,7 +69,7 @@ class Jugada
             return empate
         else
             ronda = jugador_1 + ", " + jugador_2
-            return @puntos_por_jugada[ronda] 
+            return $puntos_por_jugada[ronda] 
         end
     end
 end
