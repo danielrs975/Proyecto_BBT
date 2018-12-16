@@ -248,4 +248,33 @@ class Sesgada < Estrategia
             end
         end
     end
-end 
+end
+
+# Implementacion de la clase Copiar 
+class Copiar < Estrategia
+
+    # Constructor de la clase
+    def initialize(jugada)
+        # Esto es en el caso que le paso un string
+        # como la jugada
+        jugada.downcase!
+        jugada.capitalize!
+        @mano = Jugada.new(jugada)
+        if not @mano.jugada_valida?
+            @mano = $sin_jugada
+        end
+    end
+
+    # Metodo que define la siguiente jugada a tomar 
+    def prox(contrincante)
+        jugada_oponente = contrincante.to_s # Copio la jugada del oponente
+        jugada_oponente = $posibles_jugadas[jugada_oponente] 
+        @mano = Jugada.new(jugada_oponente) # La guardo como siguiente movimiento
+
+        # Manejo si la jugada del oponente fue invalida 
+        if not @mano.jugada_valida?
+            @mano = $sin_jugada
+        end
+    end 
+
+end
