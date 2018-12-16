@@ -12,6 +12,8 @@ Y los metodos son solo dos:
 =end 
 
 class Jugada
+
+    attr_reader :jugadas, :puntos_por_jugada
     # Variables utilizadas 
     # Estas son las posibles jugadas que se puede realizar
     $jugadas = {
