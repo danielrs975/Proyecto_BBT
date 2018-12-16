@@ -65,6 +65,16 @@ class Estrategia
     def reset()
     end
 
+    # En esta seccion iran los metodos privados de la clase 
+
+    private
+
+    # Metodo que se encargara de eliminar los duplicados de una 
+    # lista o diccionario
+
+    def eliminar_duplicados(lista)
+    end
+    
 end 
 
 # Clase Manual que hereda de estrategia 
@@ -98,4 +108,15 @@ class Manual < Estrategia
             return "Esta jugada no es válida, introduzca una opción que lo sea"
         end 
     end
+
+end
+
+
+class Uniforme < Estrategia
+    
+    # Constructor de la clase
+    def initialize(lista_movimientos)
+
+    end
+
 end
