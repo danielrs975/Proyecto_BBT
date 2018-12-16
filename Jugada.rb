@@ -62,6 +62,14 @@ class Jugada
         not @jugada.nil?
     end
 
+    # Metodo que permite comparar entre dos instancias 
+    # de esta clase 
+    # Dos Jugadas son iguales si y solo si son la misma 
+    # mano 
+    def eql?(mano)
+        @jugada == mano.to_s
+    end
+
     # Metodo to_s
     def to_s()
         @jugada
