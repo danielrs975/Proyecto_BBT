@@ -53,8 +53,13 @@ class Jugada
         if $jugadas[jugada_realizada] != nil
             @jugada = $jugadas[jugada_realizada]
         else
-            puts "Jugada incorrecta"
+            @jugada = nil 
         end
+    end
+
+    # Metodo que me dice si una Jugada es valida
+    def jugada_valida?
+        not @jugada.nil?
     end
 
     # Metodo to_s
