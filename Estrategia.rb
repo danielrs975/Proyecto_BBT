@@ -35,7 +35,7 @@ Tambien se hara la implementacion de los siguientes metodos:
 =end 
 
 class Estrategia
-    attr_reader :posibles_jugadas, :sin_jugada
+    attr_reader :posibles_jugadas, :sin_jugada, :simbolos_posibles
 
     # Un diccionario que contiene el mapeo entre la jugada mostrada por el 
     # objeto Jugada a un formato mas amigable 
@@ -47,9 +47,26 @@ class Estrategia
         "la" => "Lagarto"
     }
 
+    # Lista de simbolos posibles
+    $simbolos_posibles = [
+        :Piedra,
+        :Papel,
+        :Tijera,
+        :Spock,
+        :Lagarto
+    ]
+
     # Tiene un string que contiene la respuesta en caso de 
     # que no se halla seleccionado una jugada
     $sin_jugada = "No se ha seleccionado una jugada"
+
+    # Instancia de la clase Random para generar numeros aleatorios 
+    $r = Random.new(42)
+
+    # Constructor de la clase 
+    def initialize()
+        @mano = $sin_jugada
+    end
 
     # Esta es una plantilla de la funcion pues cambiara 
     # segun la especializacion
@@ -59,6 +76,11 @@ class Estrategia
 
     # Muestra la clase en formato Human-Readable
     def to_s()
+        if @mano.instance_of?(Jugada)
+            "Su mano actual es " + $posibles_jugadas[@mano.to_s]
+        else
+            @mano
+        end
     end
     
     # Regresa el juego a su estado original
@@ -73,6 +95,9 @@ class Estrategia
     # lista o diccionario
 
     def eliminar_duplicados(lista)
+        if lista.instance_of?(Array)
+            lista.uniq!
+        end
     end
     
 end 
@@ -82,16 +107,7 @@ class Manual < Estrategia
     
     # Constructor de la clase
     def initialize()
-        @mano = $sin_jugada
-    end
-
-    # Muestra la clase en un formato Human-Readable
-    def to_s()
-        if @mano.instance_of?(Jugada)
-            "Su mano actual es " + $posibles_jugadas[@mano.to_s]
-        else
-            @mano
-        end
+        super
     end
 
     # Este metodo pide al usuario que introduzca una jugada
@@ -116,7 +132,41 @@ class Uniforme < Estrategia
     
     # Constructor de la clase
     def initialize(lista_movimientos)
+        super()
+        # Verifica que cada elemento sea un simbolo y ademas sea un simbolo valido
+        lista_valida = lista_movimientos.all? {|estrategia| estrategia.instance_of?(Symbol) and $simbolos_posibles.member?(estrategia)}
+        if lista_movimientos.length == 0 or (not lista_valida) 
+            # Esto ultimo verifica que todos los elementos de la lista sean del mismo
+            # tipo, Symbol
+            @estrategias = nil 
+            return
+        end
+        @estrategias = eliminar_duplicados(lista_movimientos)
+    end
 
+    # Muestra la clase en un formato Human-Readable
+    def to_s()
+        mano_seleccionada = super.to_s # Hago un llamado al metodo to_s de mi padre que maneja
+        # la impresion de la mano seleccionada
+        if not @estrategias.nil?
+            return "Las estrategias suministradas son " + @estrategias.to_s + " " + mano_seleccionada
+        end
+        return "La lista de estrategias provista no es valida"
+    end
+
+    # Este metodo crea la siguiente jugada a tomar 
+    def prox()
+        # Como sigue una distribucion uniforme entonces 
+        # cada uno de los movimientos tendra la misma
+        # probabilidad. Esto se traduce en conseguir un
+        # numero random entre 0 y el numero de estrategias
+        # menos 1 
+        posicion_jugada = $r.rand(0..(@estrategias.length - 1))
+        jugada_seleccionada = @estrategias[posicion_jugada]
+        jugada_seleccionada = jugada_seleccionada.to_s
+        @mano = Jugada.new(jugada_seleccionada)
+        
+        
     end
 
 end
