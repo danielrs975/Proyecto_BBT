@@ -1,3 +1,5 @@
+require_relative 'Jugada.rb'
+
 =begin
 En este archivo se implementa la clase Estrategia, esta clase representa a los 
 jugadores participantes tendra como subclases:
@@ -33,6 +35,22 @@ Tambien se hara la implementacion de los siguientes metodos:
 =end 
 
 class Estrategia
+    attr_reader :posibles_jugadas, :sin_jugada
+
+    # Un diccionario que contiene el mapeo entre la jugada mostrada por el 
+    # objeto Jugada a un formato mas amigable 
+    $posibles_jugadas = {
+        "pi" => "Piedra",
+        "pa" => "Papel",
+        "ti" => "Tijera",
+        "sp" => "Spock",
+        "la" => "Lagarto"
+    }
+
+    # Tiene un string que contiene la respuesta en caso de 
+    # que no se halla seleccionado una jugada
+    $sin_jugada = "No se ha seleccionado una jugada"
+
     # Esta es una plantilla de la funcion pues cambiara 
     # segun la especializacion
     # Funcion que genera la proxima jugada
@@ -46,4 +64,38 @@ class Estrategia
     # Regresa el juego a su estado original
     def reset()
     end
+
 end 
+
+# Clase Manual que hereda de estrategia 
+class Manual < Estrategia
+    
+    # Constructor de la clase
+    def initialize()
+        @mano = $sin_jugada
+    end
+
+    # Muestra la clase en un formato Human-Readable
+    def to_s()
+        if @mano.instance_of?(Jugada)
+            "Su mano actual es " + $posibles_jugadas[@mano.to_s]
+        else
+            @mano
+        end
+    end
+
+    # Este metodo pide al usuario que introduzca una jugada
+    def prox()
+        entrada = gets
+        entrada.downcase! # Lleva todo el input a minusculas 
+        entrada.capitalize! # Convierte a la primera letra en mayusculas
+        entrada = entrada.slice(0,entrada.length - 1) # Quita el salto de linea
+        @mano = Jugada.new(entrada) # Se crea una instancia de Jugada
+        
+        # Manejador si ocurre que el usuario ingresa una opcion no valida 
+        if not @mano.jugada_valida? 
+            @mano = $sin_jugada
+            return "Esta jugada no es válida, introduzca una opción que lo sea"
+        end 
+    end
+end
