@@ -127,7 +127,7 @@ class Manual < Estrategia
 
 end
 
-
+# Especializacion de Uniforme 
 class Uniforme < Estrategia
     
     # Constructor de la clase
@@ -164,9 +164,88 @@ class Uniforme < Estrategia
         posicion_jugada = $r.rand(0..(@estrategias.length - 1))
         jugada_seleccionada = @estrategias[posicion_jugada]
         jugada_seleccionada = jugada_seleccionada.to_s
-        @mano = Jugada.new(jugada_seleccionada)
-        
-        
+        @mano = Jugada.new(jugada_seleccionada)       
     end
 
 end
+
+# Especializacion de Sesgada
+class Sesgada < Estrategia 
+
+    # Constructor de la clase 
+    def initialize(dic_movimientos)
+        super() # Inicializo el atributo mano
+        if diccionario_valido?(dic_movimientos)
+            @movimientos = dic_movimientos # Aqui se mantiene solo los casos favorables por cada movimiento
+            @rangos = dic_movimientos.clone # Aqui se guardaran los rangos 
+            @rango = 0
+            @rangos.each_key do |jugada|
+                @rangos[jugada] += @rango
+                @rango = @rangos[jugada]
+            end
+        else
+            @movimientos = nil 
+        end
+    end
+
+    # Metodo que muestra la clase en un formato Human-Readable
+    def to_s()
+        mano_seleccionada = super.to_s
+        if not @movimientos.nil?
+            return "Las estrategias suministradas son " + @movimientos.to_s + " " + mano_seleccionada
+        end
+        return "El diccionario de estrategias provista no es valida"
+    end
+
+    # Metodo que es escoge la mano con la cual se va a jugar 
+    def prox()
+        numero_aleatorio = $r.rand(1..@rango)
+        jugada_seleccionada = seleccion_jugada(numero_aleatorio)
+        jugada_seleccionada = jugada_seleccionada.to_s
+        @mano = Jugada.new(jugada_seleccionada)
+    end
+
+    private 
+    # Funciones privadas para esta especializacion 
+
+    def diccionario_valido?(dic)
+        # Verifica que cada una de las llaves sea un simbolo, ademas que sea
+        # un simbolo valido 
+        dic.each_key do |jugada|
+            if not jugada.instance_of?(Symbol) or not $simbolos_posibles.member?(jugada)
+                return false
+            end
+        end 
+
+        # Que la probabilidad sea un numero mayor o igual que 1 
+        dic.each_value do |probabilidad|
+            if probabilidad < 1
+                return false 
+            end
+        end
+
+        return true 
+    end
+
+    # Metodo que regresa una jugada dependiendo en que rango
+    # caiga el numero aleatorio 
+    def seleccion_jugada(numero_random)
+        '''
+            Explicacion de este metodo:
+            Por ejemplo para una lista de movimientos como esta
+                    {:Tijera => 3, :Papel => 2}
+            Los rangos seran los siguientes 
+                    {:Tijera => 3, :Papel => 5}
+            Esto sera que si un numero random cae entre 
+            1 y 3 (Inclusivo) devolvera Tijera
+            si cae entre 4 y 5 devolvera Papel 
+            Esto se modela con el <= del condicional
+        '''
+        @rangos.each_key do |jugada| # Se recorre el diccionario 
+            if numero_random <= @rangos[jugada] # Cuando se consiga una jugada cuyo valor sea menor o igual
+                # que el numero random se retorna dicha jugada
+                return jugada 
+            end
+        end
+    end
+end 
