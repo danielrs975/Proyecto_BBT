@@ -278,3 +278,70 @@ class Copiar < Estrategia
     end 
 
 end
+
+# Implementacion de la clase Pensar
+class Pensar < Estrategia 
+    
+    # Constructor de la clase
+    def initialize()
+        super()
+        # Diccionario que guarda las frecuencias de cada Jugada
+        @frecuencia_jugadas = {
+            "Piedra" => 1,
+            "Papel" => 1,
+            "Tijera" => 1,
+            "Lagarto" => 1,
+            "Spock" => 1
+        }
+    end
+    
+
+    # Metodo que define la siguiente jugada a tomar 
+    def prox(jugada_oponente=nil)
+        if not jugada_oponente.nil? and jugada_oponente.jugada_valida?
+            mano_oponente = $posibles_jugadas[jugada_oponente.to_s] # La mano usada por el oponente
+            @frecuencia_jugadas[mano_oponente] += 1 # Se le aumenta en uno a la jugada usada
+        end
+
+        @mano = seleccion_jugada
+
+    end
+
+    private
+
+    # Metodo que seleccion la jugada a tomar 
+    def seleccion_jugada()
+        # Suma de todas las frecuencias 
+        total_frecuencias = -1
+        @frecuencia_jugadas.each_value do |valor|
+            total_frecuencias += valor 
+        end
+        
+        # Este bloque me permite saber si todas las frecuencias estan en 0 (Inicio del juego)
+        # Si es asi el numero_aleatorio sera 0
+        numero_aleatorio = $r.rand(0..total_frecuencias)
+
+        # Calculo de rango para cada una de las jugadas
+        frecuencia_piedra = @frecuencia_jugadas["Piedra"]
+        frecuencia_papel = frecuencia_piedra + @frecuencia_jugadas["Papel"]
+        frecuencia_tijera = frecuencia_papel + @frecuencia_jugadas["Tijera"]
+        frecuencia_lagarto = frecuencia_tijera + @frecuencia_jugadas["Lagarto"]
+        frecuencia_spock = frecuencia_lagarto + @frecuencia_jugadas["Spock"]
+
+
+        # Bloque case para cada uno de los rangos 
+        case numero_aleatorio
+        when 0 .. (frecuencia_piedra - 1)
+            return Jugada.new("Piedra")
+        when frecuencia_piedra .. (frecuencia_papel - 1)
+            return Jugada.new("Papel")
+        when frecuencia_papel .. (frecuencia_tijera - 1)
+            return Jugada.new("Tijera")
+        when frecuencia_tijera .. (frecuencia_lagarto - 1)
+            return Jugada.new("Lagarto")
+        when frecuencia_lagarto .. (frecuencia_spock - 1)
+            return Jugada.new("Spock") 
+        end
+
+    end
+end
