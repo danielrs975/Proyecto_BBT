@@ -1,3 +1,6 @@
+require_relative 'Jugada.rb'
+require_relative 'Estrategia.rb'
+
 =begin
 En este archivo se implementa la clase Partida, esta clase se encarga de
 manejar las rondas del juego
@@ -20,3 +23,23 @@ Metodos de la clase:
 IMPORTANTE: Es posible decidir continuar un juego
 
 =end
+
+class Partida
+
+    attr_reader :mapa_partida, :nombres, :estrategias 
+    
+    def initialize(mapa_partida)
+
+        # Verificar que hay exactamente dos jugadores y que 
+        # en efecto se trata de estrategias
+        temp = []
+        mapa_partida.each_value {|value| temp.push(value) }
+        temp1 = temp[0].instance_of?(Estrategia)
+        temp2 = temp[1].instance_of?(Estrategia)
+        if mapa_partida.length == 2
+            if temp1 && temp2 
+            else
+                return "Debe ingresar estrategias"
+            end
+        else
+            return "El número de jugadores deben ser exactamente 2."
