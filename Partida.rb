@@ -43,6 +43,21 @@ class Partida
                 $mapa_partida = mapa
                 $estrategias = temp
                 $nombres = keys
+                # estrategias de los dos jugadores
+                @jugador0 = $estrategias[0]
+                @jugador1 = $estrategias[1]
+        
+                #reconocer cuales son las estrategias del jugador 0 y 1 respectivamente
+                @manual0 = @jugador0.instance_of?(Manual)
+                @manual1 = @jugador1.instance_of?(Manual)
+                @unif0 = @jugador0.instance_of?(Unif)
+                @unif1 = @jugador1.instance_of?(Unif)
+                @sesg0 = @jugador0.instance_of?(Sesg)
+                @sesg1 = @jugador1.instance_of?(Sesg)
+                @copiar0 = @jugador0.instance_of?(Copiar)
+                @copiar1 = @jugador1.instance_of?(Copiar)
+                @pensar0 = @jugador0.instance_of?(Pensar)
+                @pensar1 = @jugador1.instance_of?(Pensar)
             else
                 return "Debe ingresar estrategias"
             end
@@ -51,13 +66,71 @@ class Partida
         end
     end
 
+    # Metodo que con n un entero positivo, debe completar n rondas en el juego y producir un mapa
+    # indicando los puntos obtenidos por cada jugador y la cantidad de rondas jugadas.
     def rondas(n)
-        jugador0 = estrategias[0]
-        jugador1 = estrategias[1]
+        puntos0 = 0
+        puntos1 = 0
         for i in 0..n
-            if jugador0.instance_of?(Copiar) && i > 0
-            elsif jugador1.instance_of?(Copiar) && i > 0
+            if i > 0 # segunda ronda
+                if @copiar0 || @pensar0
+                    jugada0 = @jugador0.prox(old_jugada1)
+                end
+                if @copiar1 || @pensar1
+                    jugada1 = @jugador1.prox(jugada0)
+                end
+                if @manual0 || @unif0 || @sesg0
+                    jugada0 = @jugador0.prox()
+                end
+                if @manual1 || @unif1 || @sesg1
+                    jugada1 = @jugador1.prox()
+                end
+                oldjugada1 = jugada1 # se actualiza la ultima jugada del jugador1 para ser utilizada por jugador0
+            else # primera ronda
+                old_jugada0 = @jugador0.prox()
+                old_jugada1 = @jugador1.prox()
             end
+            # puntos
+            puntos0 += jugada0.puntos(jugada1)[0]
+            puntos1 += jugada0.puntos(jugada1)[1]
         end
+
+        return {$nombres[0] => puntos0, $nombres[1] => puntos1, :Rondas => n}
     end
+
+
+    # Metodo que con n un entero positivo, debe completar tantas rondas como sea necesario
+    # hasta que alguno de los jugadores alcance n puntos, produciendo un mapa indicando los puntos
+    # obtenidos por cada jugador y la cantidad de rondas jugadas.
+    def alcanzar(n)
+        puntos0 = 0
+        puntos1 = 0
+        rondas = 0
+        while puntos0<n || puntos1<n
+            rondas +=1
+            if i > 0 # segunda ronda
+                if @copiar0 || @pensar0
+                    jugada0 = @jugador0.prox(old_jugada1)
+                end
+                if @copiar1 || @pensar1
+                    jugada1 = @jugador1.prox(jugada0)
+                end
+                if @manual0 || @unif0 || @sesg0
+                    jugada0 = @jugador0.prox()
+                end
+                if @manual1 || @unif1 || @sesg1
+                    jugada1 = @jugador1.prox()
+                end
+                oldjugada1 = jugada1
+            else # primera ronda
+                old_jugada0 = @jugador0.prox()
+                old_jugada1 = @jugador1.prox()
+            end
+            # puntos
+            puntos0 += jugada0.puntos(jugada1)[0]
+            puntos1 += jugada0.puntos(jugada1)[1]
+        end
+        return {$nombres[0] => puntos0, $nombres[1] => puntos1, :Rondas => rondas}
+    end
+
 end
