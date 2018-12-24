@@ -11,6 +11,7 @@ Y los metodos son solo dos:
     y el contricante
 =end 
 
+# Clase que representa las jugadas del juego
 class Jugada
 
     attr_reader :jugadas, :puntos_por_jugada
@@ -49,6 +50,7 @@ class Jugada
     }
 
     # Constructor del objeto jugada
+    # @param [String] jugada_realizada, aqui va la jugada escogida
     def initialize(jugada_realizada)
         if $jugadas[jugada_realizada] != nil
             @jugada = $jugadas[jugada_realizada]
@@ -58,24 +60,20 @@ class Jugada
     end
 
     # Metodo que me dice si una Jugada es valida
+    # @return true si la jugada no es nil, false en caso contrario
     def jugada_valida?
         not @jugada.nil?
     end
 
-    # Metodo que permite comparar entre dos instancias 
-    # de esta clase 
-    # Dos Jugadas son iguales si y solo si son la misma 
-    # mano 
-    def eql?(mano)
-        @jugada == mano.to_s
-    end
-
     # Metodo to_s
+    # @return [String] que es la jugada escogida
     def to_s()
         @jugada
     end
 
     # Metodo puntos(j)
+    # @param [Jugada] que es la jugada del contrincante
+    # @return [Array] que es los puntos obtenidos 
     def puntos(j)
         jugador_1 = @jugada 
         jugador_2 = j.to_s
