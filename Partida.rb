@@ -24,10 +24,18 @@ IMPORTANTE: Es posible decidir continuar un juego
 
 =end
 
-class Partida
+# Clase que representa las partidas del juego
 
-    attr_reader :mapa_partida, :nombres, :estrategias 
+class Partida
+    # * +mapa_partida+ representa un mapeo entre el nombre de los jugadores y sus estrategias
+    attr_reader :mapa_partida
+    # * +nombres+ lista de los nombres de los jugadores
+    attr_reader :nombres
+    # * +estrategias+ lista de las estrategias de los jugadores
+    attr_reader :estrategias 
     
+    # Constructor del objeto Partida
+     # @param Hash mapa, mapa de los nombres de los jugadores con sus estrategias respectivas
     def initialize(mapa)
 
         # Verificar que hay exactamente dos jugadores y que 
@@ -68,6 +76,8 @@ class Partida
 
     # Metodo que con n un entero positivo, debe completar n rondas en el juego y producir un mapa
     # indicando los puntos obtenidos por cada jugador y la cantidad de rondas jugadas.
+    # @param Integer n siendo n el numero de rondas
+    # return Hash de los jugadores con los puntos obtenidos en las rondas respectivamente
     def rondas(n)
         puntos0 = 0
         puntos1 = 0
@@ -102,6 +112,8 @@ class Partida
     # Metodo que con n un entero positivo, debe completar tantas rondas como sea necesario
     # hasta que alguno de los jugadores alcance n puntos, produciendo un mapa indicando los puntos
     # obtenidos por cada jugador y la cantidad de rondas jugadas.
+    # @param Integer n siendo n el numero de puntos
+    # return Hash de los jugadores con los puntos obtenidos en las rondas respectivamente
     def alcanzar(n)
         puntos0 = 0
         puntos1 = 0
