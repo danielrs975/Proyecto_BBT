@@ -34,6 +34,9 @@ Tambien se hara la implementacion de los siguientes metodos:
     - reset     ---> Lleva la estrategia a su estado inicial
 =end 
 
+##
+# Esta clase representa una estrategia arbitraria para un jugador 
+
 class Estrategia
     attr_reader :posibles_jugadas, :sin_jugada, :simbolos_posibles
 
@@ -64,6 +67,7 @@ class Estrategia
     $r = Random.new(42)
 
     # Constructor de la clase 
+    # @param no se recibe ningun parametro 
     def initialize()
         @mano = $sin_jugada
     end
@@ -71,10 +75,13 @@ class Estrategia
     # Esta es una plantilla de la funcion pues cambiara 
     # segun la especializacion
     # Funcion que genera la proxima jugada
+    # @param [Jugada] m es un objeto de tipo jugada 
+    # @return [Jugada] retorna la proxima jugada del jugador
     def prox(m)
     end
 
     # Muestra la clase en formato Human-Readable
+    # @return [String] que es la respuesta al usuario
     def to_s()
         if @mano.instance_of?(Jugada)
             "Su mano actual es " + $posibles_jugadas[@mano.to_s]
@@ -93,7 +100,8 @@ class Estrategia
 
     # Metodo que se encargara de eliminar los duplicados de una 
     # lista o diccionario
-
+    # @param [Array] recibe un arreglo
+    # @return [Array] retorna un arreglo sin los elementos duplicados
     def eliminar_duplicados(lista)
         if lista.instance_of?(Array)
             lista.uniq!
@@ -106,12 +114,12 @@ end
 class Manual < Estrategia
     
     # Constructor de la clase
-    def initialize()
+    def initialize() # :nodoc:
         super
     end
 
     # Este metodo pide al usuario que introduzca una jugada
-    def prox()
+    def prox() 
         entrada = gets
         entrada.downcase! # Lleva todo el input a minusculas 
         entrada.capitalize! # Convierte a la primera letra en mayusculas
@@ -131,6 +139,7 @@ end
 class Uniforme < Estrategia
     
     # Constructor de la clase
+    # @param [Array] lista_movimientos, es la listas de todos los movimientos de la estrategia
     def initialize(lista_movimientos)
         super()
         # Verifica que cada elemento sea un simbolo y ademas sea un simbolo valido
@@ -145,7 +154,7 @@ class Uniforme < Estrategia
     end
 
     # Muestra la clase en un formato Human-Readable
-    def to_s()
+    def to_s() # :nodoc:
         mano_seleccionada = super.to_s # Hago un llamado al metodo to_s de mi padre que maneja
         # la impresion de la mano seleccionada
         if not @estrategias.nil?
@@ -155,6 +164,7 @@ class Uniforme < Estrategia
     end
 
     # Este metodo crea la siguiente jugada a tomar 
+    # @return [Jugada] retorna un objeto Jugada 
     def prox()
         # Como sigue una distribucion uniforme entonces 
         # cada uno de los movimientos tendra la misma
@@ -173,6 +183,7 @@ end
 class Sesgada < Estrategia 
 
     # Constructor de la clase 
+    # @param [Hash] dic_movimientos, es un diccionario con todos los movimientos y sus probabilidades
     def initialize(dic_movimientos)
         super() # Inicializo el atributo mano
         if diccionario_valido?(dic_movimientos)
@@ -189,7 +200,7 @@ class Sesgada < Estrategia
     end
 
     # Metodo que muestra la clase en un formato Human-Readable
-    def to_s()
+    def to_s() # :nodoc:
         mano_seleccionada = super.to_s
         if not @movimientos.nil?
             return "Las estrategias suministradas son " + @movimientos.to_s + " " + mano_seleccionada
@@ -198,7 +209,7 @@ class Sesgada < Estrategia
     end
 
     # Metodo que es escoge la mano con la cual se va a jugar 
-    def prox()
+    def prox() # :nodoc:
         numero_aleatorio = $r.rand(1..@rango)
         jugada_seleccionada = seleccion_jugada(numero_aleatorio)
         jugada_seleccionada = jugada_seleccionada.to_s
@@ -207,7 +218,9 @@ class Sesgada < Estrategia
 
     private 
     # Funciones privadas para esta especializacion 
-
+    # Esta funcion verifica si el diccionario introducido es valido 
+    # @param [Hash] diccionario a verificar
+    # @return true si el diccionario es valido, false en caso contrario 
     def diccionario_valido?(dic)
         # Verifica que cada una de las llaves sea un simbolo, ademas que sea
         # un simbolo valido 
@@ -229,6 +242,8 @@ class Sesgada < Estrategia
 
     # Metodo que regresa una jugada dependiendo en que rango
     # caiga el numero aleatorio 
+    # @param [Integer] numero_random
+    # @return [Jugada]
     def seleccion_jugada(numero_random)
         '''
             Explicacion de este metodo:
@@ -254,6 +269,7 @@ end
 class Copiar < Estrategia
 
     # Constructor de la clase
+    # @param [Jugada] jugada, que es la jugada que va a realizar el usuario en su primer turno
     def initialize(jugada)
         # Esto es en el caso que le paso un string
         # como la jugada
@@ -266,7 +282,7 @@ class Copiar < Estrategia
     end
 
     # Metodo que define la siguiente jugada a tomar 
-    def prox(contrincante)
+    def prox(contrincante) # :nodoc:
         jugada_oponente = contrincante.to_s # Copio la jugada del oponente
         jugada_oponente = $posibles_jugadas[jugada_oponente] 
         @mano = Jugada.new(jugada_oponente) # La guardo como siguiente movimiento
@@ -307,9 +323,21 @@ class Pensar < Estrategia
 
     end
 
+    # Metodo para retornar el juego a su estado original
+    def reset() # :nodoc:
+        @frecuencia_jugadas = {
+            "Piedra" => 1,
+            "Papel" => 1,
+            "Tijera" => 1,
+            "Lagarto" => 1,
+            "Spock" => 1
+        }
+    end
+    
     private
 
     # Metodo que seleccion la jugada a tomar 
+    # @return [Jugada]
     def seleccion_jugada()
         # Suma de todas las frecuencias 
         total_frecuencias = -1
@@ -344,4 +372,5 @@ class Pensar < Estrategia
         end
 
     end
+
 end
