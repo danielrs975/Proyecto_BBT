@@ -14,7 +14,11 @@ Y los metodos son solo dos:
 # Clase que representa las jugadas del juego
 class Jugada
 
-    attr_reader :jugadas, :puntos_por_jugada
+    # * +jugadas+ almacena todas las jugadas posibles del juego y las mapeas a un string sencillo de manejar
+    attr_reader :jugadas
+    # * +puntos_por_jugada+ es una variable que almacena todas las posibles combinaciones de jugadas y sus puntajes asociados
+    attr_reader :puntos_por_jugada
+    
     # Variables utilizadas 
     # Estas son las posibles jugadas que se puede realizar
     $jugadas = {
