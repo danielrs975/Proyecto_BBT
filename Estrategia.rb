@@ -38,8 +38,14 @@ Tambien se hara la implementacion de los siguientes metodos:
 # Esta clase representa una estrategia arbitraria para un jugador 
 
 class Estrategia
-    attr_reader :posibles_jugadas, :sin_jugada, :simbolos_posibles
-
+    
+    # * +posibles_jugadas+ - Es una tabla de hash que contiene la transformacion de las jugadas en su nombre completo
+    attr_reader :posibles_jugadas
+    # * +sin_jugada+ - Este es un mensaje generico si una jugada no ha sido escogida 
+    attr_reader :sin_jugada
+    # * +simbolos_posibles+ - Son las etiquetas que son validas para el juego
+    attr_reader :simbolos_posibles
+    
     # Un diccionario que contiene el mapeo entre la jugada mostrada por el 
     # objeto Jugada a un formato mas amigable 
     $posibles_jugadas = {
@@ -64,6 +70,11 @@ class Estrategia
     $sin_jugada = "No se ha seleccionado una jugada"
 
     # Instancia de la clase Random para generar numeros aleatorios 
+    # ==== Attributes
+    # 
+    
+    # * +r+ - Es el que almacena el objeto random para generar numeros random
+    attr_accessor :r
     $r = Random.new(42)
 
     # Constructor de la clase 
