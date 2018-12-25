@@ -115,7 +115,7 @@ class Estrategia
     # @return [Array] retorna un arreglo sin los elementos duplicados
     def eliminar_duplicados(lista)
         if lista.instance_of?(Array)
-            lista.uniq!
+            return lista.uniq
         end
     end
     
