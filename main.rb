@@ -24,7 +24,7 @@ $estrategias =
 
 Introduzca una opcion: "
 
-$jugadas =
+$jugadas_disponibles =
 "
 1- Piedra
 2- Papel
@@ -35,11 +35,18 @@ $jugadas =
 
 Introduzca una jugada: "
 
+$modalidad_juegos = 
+"
+1- Rondas
+2- Cantidad de puntos
+
+Introduzca una modalidad: "
+
 $opcion_invalida = "La opcion marcada no es valida"
 
 # Metodo que devuelve una jugada en String 
 def seleccionar_una_jugada()
-    print $jugadas 
+    print $jugadas_disponibles 
     respuesta = gets
     respuesta = respuesta.to_i
     case respuesta 
@@ -86,9 +93,11 @@ def menu_secundario()
     respuesta = respuesta.to_i 
     case respuesta
     when 1
+        # Implementacion de la opcion Pensar
         system "clear"
         return Pensar.new()
     when 2
+        # Implementacion de la opcion Uniforme
         system "clear"
         lista_movimientos = []
         jugada = seleccionar_una_jugada
@@ -106,6 +115,7 @@ def menu_secundario()
             return menu_secundario
         end
     when 3
+        # Implementacion de la opcion Sesgada
         system "clear"
         dic_movimientos = {}
         jugada = seleccionar_una_jugada
@@ -129,12 +139,55 @@ def menu_secundario()
         end
         return "El diccionario de movimientos no esta vacio"
     when 4
+        # Implementacion de la opcion Copiar
         system "clear"
-        puts "Copiar"
+        jugada_seleccionada = seleccionar_una_jugada
+        if not jugada_seleccionada.nil?
+            return Copiar.new(jugada_seleccionada)
+        end
+        return "La jugada seleccionada no es valida"
     else
+        # Maneja si la opcion no es valida
         puts $opcion_invalida
         system "clear"
         return menu_secundario
+    end
+end
+
+# Otro menu de para seleccionar que modalidad de juego se seleccionara 
+def menu_modalidad(partida)
+    print $modalidad_juegos
+    respuesta = gets
+    respuesta = respuesta.to_i
+    case respuesta
+    when 1
+        system "clear"
+        print "Introduzca un numero de rondas: "
+        numero_rondas = gets
+        numero_rondas = numero_rondas.to_i
+        while numero_rondas == 0
+            puts "El numero de rondas introducido no es valido"
+            print "Introduzca un numero de rondas: "
+            numero_rondas = gets 
+            numero_rondas = numero_rondas.to_i
+        end
+        return partida.rondas(numero_rondas)
+    when 2
+        system "clear"
+        print "Introduzca la cantidad de puntos: "
+        numero_puntos = gets
+        numero_puntos = numero_puntos.to_i
+        while numero_puntos == 0
+            puts "El numero de puntos introducido no es valido"
+            print "Introduzca un numero de puntos: "
+            numero_puntos = gets
+            numero_puntos = numero_puntos.to_i
+        end
+        return partida.alcanzar(numero_puntos)
+    else
+        system "clear"
+        puts $opcion_invalida
+        return menu_modalidad
     end
 end
 
@@ -148,10 +201,26 @@ def main()
             system "clear"
             estrategia_jugador = Manual.new()
             estrategia_pc = menu_secundario()
-            puts estrategia_pc
-        when 2
+            mapa_de_jugadores = {
+                :Jugador_1 => estrategia_jugador,
+                :Computadora => estrategia_pc
+            }
+            partida = Partida.new(mapa_de_jugadores)
+            resultado = menu_modalidad(partida)
             system "clear"
-            puts "opcion 2"
+            puts resultado 
+            exit
+        when 2
+            estrategia_pc_1 = menu_secundario()
+            estrategia_pc_2 = menu_secundario()
+            mapa_de_jugadores = {
+                :Computadora_1 => estrategia_pc_1,
+                :Computadora_2 => estrategia_pc_2
+            }
+            partida = Partida.new(mapa_de_jugadores)
+            resultado = menu_modalidad(partida)
+            puts resultado
+            exit
         when 3
             exit
         else
@@ -163,4 +232,6 @@ def main()
 end
 
 # correr main
-main
+while true
+    main
+end
