@@ -136,6 +136,7 @@ class Manual < Estrategia
         entrada.capitalize! # Convierte a la primera letra en mayusculas
         entrada = entrada.slice(0,entrada.length - 1) # Quita el salto de linea
         @mano = Jugada.new(entrada) # Se crea una instancia de Jugada
+        return @mano
         
         # Manejador si ocurre que el usuario ingresa una opcion no valida 
         if not @mano.jugada_valida? 
@@ -185,7 +186,8 @@ class Uniforme < Estrategia
         posicion_jugada = $r.rand(0..(@estrategias.length - 1))
         jugada_seleccionada = @estrategias[posicion_jugada]
         jugada_seleccionada = jugada_seleccionada.to_s
-        @mano = Jugada.new(jugada_seleccionada)       
+        @mano = Jugada.new(jugada_seleccionada)
+        return @mano       
     end
 
 end
@@ -225,6 +227,7 @@ class Sesgada < Estrategia
         jugada_seleccionada = seleccion_jugada(numero_aleatorio)
         jugada_seleccionada = jugada_seleccionada.to_s
         @mano = Jugada.new(jugada_seleccionada)
+        return @mano
     end
 
     private 
@@ -302,6 +305,7 @@ class Copiar < Estrategia
         if not @mano.jugada_valida?
             @mano = $sin_jugada
         end
+        return @mano
     end 
 
 end
@@ -331,6 +335,7 @@ class Pensar < Estrategia
         end
 
         @mano = seleccion_jugada
+        return @mano
 
     end
 
