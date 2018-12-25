@@ -42,26 +42,26 @@ class Partida
         # en efecto se trata de estrategias
         temp = []
         mapa.each_value {|value| temp.push(value) }
-        temp1 = temp[0].instance_of?(Estrategia)
-        temp2 = temp[1].instance_of?(Estrategia)
+        temp1 = temp[0].class <= Estrategia
+        temp2 = temp[1].class <= Estrategia
         keys = []
         mapa.each_key {|key| keys.push(key)}
         if mapa.length == 2
-            if temp1 && temp2
+            if temp1 and temp2
+                
                 $mapa_partida = mapa
                 $estrategias = temp
                 $nombres = keys
                 # estrategias de los dos jugadores
-                @jugador0 = $estrategias[0]
-                @jugador1 = $estrategias[1]
-        
+                @jugador0 = temp[0]
+                @jugador1 = temp[1]
                 #reconocer cuales son las estrategias del jugador 0 y 1 respectivamente
                 @manual0 = @jugador0.instance_of?(Manual)
                 @manual1 = @jugador1.instance_of?(Manual)
-                @unif0 = @jugador0.instance_of?(Unif)
-                @unif1 = @jugador1.instance_of?(Unif)
-                @sesg0 = @jugador0.instance_of?(Sesg)
-                @sesg1 = @jugador1.instance_of?(Sesg)
+                @unif0 = @jugador0.instance_of?(Uniforme)
+                @unif1 = @jugador1.instance_of?(Uniforme)
+                @sesg0 = @jugador0.instance_of?(Sesgada)
+                @sesg1 = @jugador1.instance_of?(Sesgada)
                 @copiar0 = @jugador0.instance_of?(Copiar)
                 @copiar1 = @jugador1.instance_of?(Copiar)
                 @pensar0 = @jugador0.instance_of?(Pensar)
@@ -81,10 +81,11 @@ class Partida
     def rondas(n)
         puntos0 = 0
         puntos1 = 0
+        oldjugada1 = nil
         for i in 0..n
             if i > 0 # segunda ronda
                 if @copiar0 || @pensar0
-                    jugada0 = @jugador0.prox(old_jugada1)
+                    jugada0 = @jugador0.prox(oldjugada1)
                 end
                 if @copiar1 || @pensar1
                     jugada1 = @jugador1.prox(jugada0)
@@ -95,14 +96,15 @@ class Partida
                 if @manual1 || @unif1 || @sesg1
                     jugada1 = @jugador1.prox()
                 end
-                oldjugada1 = jugada1 # se actualiza la ultima jugada del jugador1 para ser utilizada por jugador0
+                oldjugada1 = jugada1
             else # primera ronda
-                old_jugada0 = @jugador0.prox()
-                old_jugada1 = @jugador1.prox()
+                jugada0 = @jugador0.prox()
+                jugada1 = @jugador1.prox()
+                oldjugada1 = jugada1
             end
             # puntos
-            puntos0 += jugada0.puntos(jugada1)[0]
-            puntos1 += jugada0.puntos(jugada1)[1]
+            puntos0 += (jugada0.puntos(jugada1))[0]
+            puntos1 += (jugada0.puntos(jugada1))[1]
         end
 
         return {$nombres[0] => puntos0, $nombres[1] => puntos1, :Rondas => n}
@@ -118,11 +120,11 @@ class Partida
         puntos0 = 0
         puntos1 = 0
         rondas = 0
-        while puntos0<n || puntos1<n
-            rondas +=1
-            if i > 0 # segunda ronda
+        oldjugada1 = nil 
+        while puntos0<n and puntos1<n
+            if rondas > 0 # segunda ronda
                 if @copiar0 || @pensar0
-                    jugada0 = @jugador0.prox(old_jugada1)
+                    jugada0 = @jugador0.prox(oldjugada1)
                 end
                 if @copiar1 || @pensar1
                     jugada1 = @jugador1.prox(jugada0)
@@ -135,12 +137,14 @@ class Partida
                 end
                 oldjugada1 = jugada1
             else # primera ronda
-                old_jugada0 = @jugador0.prox()
-                old_jugada1 = @jugador1.prox()
+                jugada0 = @jugador0.prox()
+                jugada1 = @jugador1.prox()
+                oldjugada1 = jugada1
             end
             # puntos
-            puntos0 += jugada0.puntos(jugada1)[0]
-            puntos1 += jugada0.puntos(jugada1)[1]
+            puntos0 += (jugada0.puntos(jugada1))[0]
+            puntos1 += (jugada0.puntos(jugada1))[1]
+            rondas +=1
         end
         return {$nombres[0] => puntos0, $nombres[1] => puntos1, :Rondas => rondas}
     end
