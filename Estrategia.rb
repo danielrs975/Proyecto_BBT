@@ -131,6 +131,7 @@ class Manual < Estrategia
 
     # Este metodo pide al usuario que introduzca una jugada
     def prox() 
+        print "Introduzca una jugada: "
         entrada = gets
         entrada.downcase! # Lleva todo el input a minusculas 
         entrada.capitalize! # Convierte a la primera letra en mayusculas
@@ -296,7 +297,10 @@ class Copiar < Estrategia
     end
 
     # Metodo que define la siguiente jugada a tomar 
-    def prox(contrincante) # :nodoc:
+    def prox(contrincante=nil) # :nodoc:
+        if contrincante.nil?
+            return @mano 
+        end
         jugada_oponente = contrincante.to_s # Copio la jugada del oponente
         jugada_oponente = $posibles_jugadas[jugada_oponente] 
         @mano = Jugada.new(jugada_oponente) # La guardo como siguiente movimiento
